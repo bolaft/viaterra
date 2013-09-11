@@ -6,7 +6,7 @@ stay over the li and keep the hover active
 
 ul.nde-menu-system li.submenu:hover
 {
-  padding-bottom: 30em;
+  /*padding-bottom: 30em;*/
 }
 
 ul.nde-menu-system li.submenu:hover ul 

@@ -106,7 +106,24 @@ echo zen_draw_form('new_product_meta_tags', $type_admin_handler , 'cPath=' . $cP
             <td class="pageHeading"><?php echo sprintf(TEXT_NEW_PRODUCT, zen_output_generated_category_path($current_category_id)); ?></td>
             <td class="pageHeading" align="right"><?php echo zen_draw_separator('pixel_trans.gif', HEADING_IMAGE_WIDTH, HEADING_IMAGE_HEIGHT); ?></td>
           </tr>
-        </table></td>
+        </table>
+        <?php    
+        // CODE ###0006    
+        // Affichage des boutons de préconfiguration    
+        // Displaying the preconfiguration buttons
+        echo '<div class="ajout_simple_bouton" id="ajout_simple_digital">' . zen_image(DIR_WS_IMAGES . 'ajout_simple/button_preconfiguration_photos_digital.png') . '</div>';
+        ?>    
+		<link rel="stylesheet" type="text/css" href="includes/javascript/ajout_simple/ajout_simple.css">
+        <script language="JavaScript" src="includes/javascript/ajout_simple/ajout_simple_meta_tags.js"></script>
+        <?php      
+        // CODE ###0006    
+        // FIN    
+        // END
+        ?>
+        </td>
+      </tr>
+      <tr>
+        <td><?php echo zen_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
       </tr>
       <tr>
         <td><?php echo zen_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
@@ -117,22 +134,32 @@ echo zen_draw_form('new_product_meta_tags', $type_admin_handler , 'cPath=' . $cP
             <tr>
               <td class="main" colspan="5" align="center"><?php echo TEXT_META_TAG_TITLE_INCLUDES; ?></td>
             </tr>
-            <tr>
+          <tr class="green_after_check">
+            <?php    
+        // CODE ###0006    
+        // Ajout d'identifiants pour traitement javascript  
+        // Adding id for javascript process
+            ?>
               <td class="main" align="center">
                 <?php echo TEXT_PRODUCTS_METATAGS_PRODUCTS_NAME_STATUS . '<br />' . zen_draw_radio_field('metatags_products_name_status', '1', $is_metatags_products_name_status) . '&nbsp;' . TEXT_YES . '&nbsp;' . zen_draw_radio_field('metatags_products_name_status', '0', $not_metatags_products_name_status) . '&nbsp;' . TEXT_NO; ?>
               </td>
               <td class="main" align="center">
                 <?php echo TEXT_PRODUCTS_METATAGS_TITLE_STATUS . '<br />' . zen_draw_radio_field('metatags_title_status', '1', $is_metatags_title_status) . '&nbsp;' . TEXT_YES . '&nbsp;' . zen_draw_radio_field('metatags_title_status', '0', $not_metatags_title_status) . '&nbsp;' . TEXT_NO; ?>
               </td>
-              <td class="main" align="center">
+              <td id="ajout_simple_metatag_modele" class="main" align="center">
                 <?php echo TEXT_PRODUCTS_METATAGS_MODEL_STATUS . '<br />' . zen_draw_radio_field('metatags_model_status', '1', $is_metatags_model_status) . '&nbsp;' . TEXT_YES . '&nbsp;' . zen_draw_radio_field('metatags_model_status', '0', $not_metatags_model_status) . '&nbsp;' . TEXT_NO; ?>
               </td>
-              <td class="main" align="center">
+              <td id="ajout_simple_metatag_prix" class="main" align="center">
                 <?php echo TEXT_PRODUCTS_METATAGS_PRICE_STATUS . '<br />' . zen_draw_radio_field('metatags_price_status', '1', $is_metatags_price_status) . '&nbsp;' . TEXT_YES . '&nbsp;' . zen_draw_radio_field('metatags_price_status', '0', $not_metatags_price_status) . '&nbsp;' . TEXT_NO; ?>
               </td>
-              <td class="main" align="center">
+              <td id="ajout_simple_metatag_titre" class="main" align="center">
                 <?php echo TEXT_PRODUCTS_METATAGS_TITLE_TAGLINE_STATUS . '<br />' . zen_draw_radio_field('metatags_title_tagline_status', '1', $is_metatags_title_tagline_status) . '&nbsp;' . TEXT_YES . '&nbsp;' . zen_draw_radio_field('metatags_title_tagline_status', '0', $not_metatags_title_tagline_status) . '&nbsp;' . TEXT_NO; ?>
               </td>
+        <?php      
+        // CODE ###0006    
+        // FIN    
+        // END
+        ?>
             </tr>
           </table>
         </td>
@@ -147,23 +174,33 @@ echo zen_draw_form('new_product_meta_tags', $type_admin_handler , 'cPath=' . $cP
               <?php echo zen_image(DIR_WS_CATALOG_LANGUAGES . $languages[$i]['directory'] . '/images/' . $languages[$i]['image'], $languages[$i]['name']) . '&nbsp;' . '<strong>' . TEXT_PRODUCTS_NAME . '</strong>' . '&nbsp;' . zen_get_products_name($_GET['pID'], $languages[$i]['id']) . '&nbsp;&nbsp;&nbsp;<strong>' . TEXT_PRODUCTS_MODEL . '</strong>&nbsp;' . $pInfo->products_model . '&nbsp;&nbsp;&nbsp;<strong>' . TEXT_PRODUCTS_PRICE_INFO . '</strong>&nbsp;' . $currencies->format($pInfo->products_price_sorter); ?>
             </td>
           </tr>
-          <tr>
+          <tr class="green_after_check">
+          <?php    
+        // CODE ###0006    
+        // Ajout d'identifiants pour traitement javascript  
+        // Adding id for javascript process
+        ?>
             <td class="main"valign="top"><?php echo TEXT_META_TAGS_TITLE; ?>&nbsp;</td>
-            <td class="main">
+            <td class="main" id="metatags_title<?php echo($languages[$i]['id']) ?>">
               <?php echo zen_draw_input_field('metatags_title[' . $languages[$i]['id'] . ']', (isset($metatags_title[$languages[$i]['id']]) ? stripslashes($metatags_title[$languages[$i]['id']]) : zen_get_metatags_title($pInfo->products_id, $languages[$i]['id'])), zen_set_field_length(TABLE_META_TAGS_PRODUCTS_DESCRIPTION, 'metatags_title', '150', false)); //,'id="'.'metatags_title' . $languages[$i]['id'] . '"');?>
             </td>
           </tr>
           <tr>
             <td class="main"valign="top"><?php echo TEXT_META_TAGS_KEYWORDS; ?>&nbsp;</td>
-            <td class="main">
+            <td class="main" id="metatags_keyword<?php echo($languages[$i]['id']) ?>">
               <?php echo zen_draw_textarea_field('metatags_keywords[' . $languages[$i]['id'] . ']', 'soft', '100%', '10', (isset($metatags_keywords[$languages[$i]['id']])) ? stripslashes($metatags_keywords[$languages[$i]['id']]) : zen_get_metatags_keywords($pInfo->products_id, $languages[$i]['id'])); //,'id="'.'metatags_keywords' . $languages[$i]['id'] . '"'); ?>
             </td>
           </tr>
-          <tr>
+          <tr class="yellow_after_check">
             <td class="main"valign="top"><?php echo TEXT_META_TAGS_DESCRIPTION; ?>&nbsp;</td>
-            <td class="main">
+            <td class="main" id="metatags_description<?php echo($languages[$i]['id']) ?>">
               <?php echo zen_draw_textarea_field('metatags_description[' . $languages[$i]['id'] . ']', 'soft', '100%', '10', (isset($metatags_description[$languages[$i]['id']])) ? stripslashes($metatags_description[$languages[$i]['id']]) : zen_get_metatags_description($pInfo->products_id, $languages[$i]['id'])); //,'id="'.'metatags_description' . $languages[$i]['id'] . '"'); ?>
             </td>
+            <?php      
+        // CODE ###0006    
+        // FIN    
+        // END
+        ?>
           </tr>
         </table></td>
       </tr>

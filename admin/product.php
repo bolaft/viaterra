@@ -7,6 +7,14 @@
  * @version $Id: product.php 6131 2007-04-08 06:56:51Z drbyte $
  */
 
+require_once('translate/config.inc.php');
+require_once('translate/class/ServicesJSON.class.php');
+require_once('translate/class/MicrosoftTranslator.class.php');
+$translator = new MicrosoftTranslator(ACCOUNT_KEY);
+$selectbox = array('id'=> 'txtLang','name'=>'txtLang', 'class' => '');
+$translator->getLanguagesSelectBox($selectbox);
+
+
   require('includes/application_top.php');
 
   require(DIR_WS_MODULES . 'prod_cat_header_code.php');
@@ -103,6 +111,11 @@
 <link rel="stylesheet" type="text/css" href="includes/cssjsmenuhover.css" media="all" id="hoverJS">
 <script language="javascript" src="includes/menu.js"></script>
 <script language="javascript" src="includes/general.js"></script>
+<link rel="stylesheet" type="text/css" href="includes/javascript/ajout_multiple/main.css" media="all">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script language="JavaScript" src="includes/javascript/ajout_multiple/main.js"></script>
+<script src="translate/js/jquery.ajaxLoader.js"></script>
+<script src="translate/js/json-jquery.js" type="text/javascript"></script> 
 <script type="text/javascript">
   <!--
   function init()
@@ -134,9 +147,21 @@ if (typeof _editor_url == "string") HTMLArea.replaceAll();
   if ($action == 'new_product' or $action == 'new_product_meta_tags') {
 
     if ($action == 'new_product_meta_tags') {
+      // CODE ###0005
+      // Modifications à faire ici pour l'ajout de produit / modification des metatags
+      // Here is the place to modify adding product process / metatags modification
       require(DIR_WS_MODULES . $zc_products->get_handler($product_type) . '/collect_info_metatags.php');
+      // CODE ###0005
+      // FIN
+      // END
     } else {
+      // CODE ###0001
+      // Modifications à faire ici pour l'ajout de produit
+      // Here is the place to modify adding product process
       require(DIR_WS_MODULES . $zc_products->get_handler($product_type) . '/collect_info.php');
+      // CODE ###0001
+      // FIN
+      // END
     }
 
   } elseif ($action == 'new_product_preview' or $action == 'new_product_preview_meta_tags') {
@@ -273,6 +298,7 @@ if (typeof _editor_url == "string") HTMLArea.replaceAll();
         $contents[] = array('text' => '<br />' . zen_image(DIR_WS_IMAGES . 'pixel_black.gif','','100%','3'));
         $contents[] = array('text' => '<form action="' . FILENAME_PRODUCTS_TO_CATEGORIES . '.php' . '?products_filter=' . $pInfo->products_id . '" method="post">');
         $contents[] = array('align' => 'center', 'text' => '<input type="submit" value="' . BUTTON_PRODUCTS_TO_CATEGORIES . '"></form>');
+
 
         break;
 // attribute features

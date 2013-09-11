@@ -1023,3 +1023,4 @@ if ($products_query_numrows > 0) {
 </body>
 </html>
 <?php require(DIR_WS_INCLUDES . 'application_bottom.php'); ?>
+

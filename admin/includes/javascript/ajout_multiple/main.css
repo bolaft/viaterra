@@ -1,0 +1,18 @@
+a#duplicate
+{
+	text-decoration: none;
+	display: inline-block;;
+	padding: 10px;
+	color: black;
+	border:1px solid #777;
+	background: #e3e3e3;
+	border-radius: 4px;
+	font-size: 12pt; 
+	font-weight: bold;
+}
+
+a#duplicate:hover
+{
+	color:white;
+	background: #333;
+}

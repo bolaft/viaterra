@@ -4,7 +4,7 @@
  * @copyright Copyright 2003-2007 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: orders.php 6864 2007-08-27 16:15:20Z drbyte $
+ * @version $Id: orders.php 30 2008-11-17 05:52:48Z numinix $
  */
 
   require('includes/application_top.php');
@@ -343,6 +343,10 @@ function couponpopupWindow(url) {
 //        echo $module->admin_notification($oID);
       }
     }
+    // fec dropdown
+    if (FEC_DROP_DOWN == 'true') {
+      $drop_down = $db->Execute("SELECT dropdown FROM " . TABLE_ORDERS . " WHERE orders_id = " . $oID . " LIMIT 1");
+    }
 ?>
       <tr>
         <td width="100%"><table border="0" width="100%" cellspacing="0" cellpadding="0">
@@ -385,6 +389,14 @@ function couponpopupWindow(url) {
                 <td class="main" valign="top"><strong><?php echo ENTRY_SHIPPING_ADDRESS; ?></strong></td>
                 <td class="main"><?php echo zen_address_format($order->delivery['format_id'], $order->delivery, 1, '', '<br />'); ?></td>
               </tr>
+              <!-- bof FEC v1.24 drop down -->
+              <?php if (FEC_DROP_DOWN == 'true') { ?>
+              <tr>
+                <td class="main" valign="top"><strong><?php echo ENTRY_DROP_DOWN; ?></strong></td>
+                <td class="main"><?php echo $drop_down->fields['dropdown']; ?></td>
+              </tr>
+              <?php } ?>
+              <!-- eof dropdown -->
             </table></td>
             <td valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="2">
               <tr>
@@ -520,6 +532,62 @@ function couponpopupWindow(url) {
         </table></td>
       </tr>
 
+<!-- bof double box -->
+<?php
+  if (MODULE_ORDER_TOTAL_DOUBLEBOX_STATUS == 'true') {
+    $orders_doublebox = $db->Execute("select orders_products_id  
+                                    from " . TABLE_ORDERS_DOUBLEBOX . "  
+                                    where orders_id = '" . zen_db_input($oID) . "' and wrap = 1");  
+
+  if ($orders_doublebox->RecordCount() > 0) {
+?>
+      <tr>
+        <td><?php echo zen_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
+      </tr>
+      <tr>
+        <td class="main"><table border="1" cellspacing="0" cellpadding="5">
+          <tr>
+            <td class="smallText" align="center"><strong><?php echo DOUBLEBOX_SUMMARY_HEADING; ?></strong></td>
+          </tr>
+<?php
+       while (!$orders_doublebox->EOF) {
+          $pos = -1;
+          for ($i=0, $n=sizeof($order->products); $i<$n; $i++) {
+              if ($order->products[$i]['orders_products_id'] == 
+                  $orders_doublebox->fields['orders_products_id']) {
+                  $pos = $i; 
+                  break;
+              }
+          }
+          $orders_doublebox->MoveNext();
+          if ($pos == -1) {
+             continue; // Should never happen
+          }
+          $i = $pos; 
+
+          echo '<tr>';
+          echo '<td class="accountProductDisplay">' . $order->products[$i]['name'];
+          if ( (isset($order->products[$i]['attributes'])) && (sizeof($order->products[$i]['attributes']) > 0) ) {
+               echo '<br><nobr><small>';
+               for ($j=0, $n2=sizeof($order->products[$i]['attributes']); $j<$n2; $j++) {
+                       echo '&nbsp;&nbsp;- ' . $order->products[$i]['attributes'][$j]['option'] . ": " . nl2br(zen_output_string_protected($order->products[$i]['attributes'][$j]['value'])) . '<br>';
+                    }
+               echo '</small></nobr>';
+          }
+          echo '</td>'; 
+          echo '</tr>'; 
+       }
+?>
+        </table></td>
+      </tr>
+<?php
+  } else { 
+    echo '<tr><td>'. DOUBLEBOX_NO_TEXT . '</td></tr>'; 
+  }
+} 
+?>
+
+<!-- eof double box -->
 <?php
   // show downloads
   require(DIR_WS_MODULES . 'orders_download.php');
@@ -851,7 +919,7 @@ if (($_GET['page'] == '' or $_GET['page'] <= 1) and $_GET['oID'] != '') {
       if (isset($oInfo) && is_object($oInfo)) {
         $heading[] = array('text' => '<strong>[' . $oInfo->orders_id . ']&nbsp;&nbsp;' . zen_datetime_short($oInfo->date_purchased) . '</strong>');
 
-        $contents[] = array('align' => 'center', 'text' => '<a href="' . zen_href_link(FILENAME_ORDERS, zen_get_all_get_params(array('oID', 'action')) . 'oID=' . $oInfo->orders_id . '&action=edit', 'NONSSL') . '">' . zen_image_button('button_edit.gif', IMAGE_EDIT) . '</a> <a href="' . zen_href_link(FILENAME_ORDERS, zen_get_all_get_params(array('oID', 'action')) . 'oID=' . $oInfo->orders_id . '&action=delete', 'NONSSL') . '">' . zen_image_button('button_delete.gif', IMAGE_DELETE) . '</a>');
+        $contents[] = array('align' => 'center', 'text' => '<a href="' . zen_href_link(FILENAME_ORDER_EDIT, zen_get_all_get_params(array('oID', 'action')) . 'oID=' . $oInfo->orders_id . '&action=edit', 'NONSSL') . '">' . zen_image_button('button_details.gif', IMAGE_DETAILS) . '</a> <a href="' . zen_href_link(FILENAME_ORDERS, zen_get_all_get_params(array('oID', 'action')) . 'oID=' . $oInfo->orders_id . '&action=delete', 'NONSSL') . '">' . zen_image_button('button_delete.gif', IMAGE_DELETE) . '</a>');
         $contents[] = array('align' => 'center', 'text' => '<a href="' . zen_href_link(FILENAME_ORDERS_INVOICE, 'oID=' . $oInfo->orders_id) . '" TARGET="_blank">' . zen_image_button('button_invoice.gif', IMAGE_ORDERS_INVOICE) . '</a> <a href="' . zen_href_link(FILENAME_ORDERS_PACKINGSLIP, 'oID=' . $oInfo->orders_id) . '" TARGET="_blank">' . zen_image_button('button_packingslip.gif', IMAGE_ORDERS_PACKINGSLIP) . '</a>');
         $contents[] = array('text' => '<br />' . TEXT_DATE_ORDER_CREATED . ' ' . zen_date_short($oInfo->date_purchased));
         $contents[] = array('text' => '<br />' . $oInfo->customers_email_address);
@@ -895,7 +963,7 @@ if (($_GET['page'] == '' or $_GET['page'] <= 1) and $_GET['oID'] != '') {
       }
 
       if (sizeof($order->products) > 0) {
-        $contents[] = array('align' => 'center', 'text' => '<a href="' . zen_href_link(FILENAME_ORDERS, zen_get_all_get_params(array('oID', 'action')) . 'oID=' . $oInfo->orders_id . '&action=edit', 'NONSSL') . '">' . zen_image_button('button_edit.gif', IMAGE_EDIT) . '</a>');
+        $contents[] = array('align' => 'center', 'text' => '<a href="' . zen_href_link(FILENAME_ORDER_EDIT, zen_get_all_get_params(array('oID', 'action')) . 'oID=' . $oInfo->orders_id . '&action=edit', 'NONSSL') . '">' . zen_image_button('button_edit.gif', IMAGE_EDIT) . '</a>');
       }
       break;
   }

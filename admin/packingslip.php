@@ -17,7 +17,7 @@
 // | to obtain it through the world-wide-web, please send a note to       |
 // | license@zen-cart.com so we can mail you a copy immediately.          |
 // +----------------------------------------------------------------------+
-//  $Id: packingslip.php 6251 2007-04-22 19:21:48Z wilt $
+//  $Id: packingslip.php 23 2008-11-15 21:03:46Z numinix $
 //
 
   require('includes/application_top.php');
@@ -72,6 +72,11 @@
       </tr>
 
 <?php
+      // FEC DROP DOWN
+      if (FEC_GIFT_MESSAGE == 'true') {
+        $additional_columns = ", gift_message";
+      }
+      
       $order_check = $db->Execute("select cc_cvv, customers_name, customers_company, customers_street_address,
                                     customers_suburb, customers_city, customers_postcode,
                                     customers_state, customers_country, customers_telephone,
@@ -82,7 +87,7 @@
                                     billing_street_address, billing_suburb, billing_city, billing_postcode,
                                     billing_state, billing_country, billing_address_format_id,
                                     payment_method, cc_type, cc_owner, cc_number, cc_expires, currency,
-                                    currency_value, date_purchased, orders_status, last_modified
+                                    currency_value, date_purchased, orders_status, last_modified" . $additional_columns . "
                              from " . TABLE_ORDERS . "
                              where orders_id = '" . (int)$oID . "'");
   $show_customer = 'false';
@@ -126,6 +131,16 @@
           <tr>
             <td class="main"><?php echo zen_address_format($order->delivery['format_id'], $order->delivery, 1, '', '<br>'); ?></td>
           </tr>
+          <!-- begin FEC v1.24 dropdown -->
+          <?php if (FEC_GIFT_MESSAGE == 'true') { ?>
+          <tr>
+            <td class="main"><strong><?php echo ENTRY_GIFT_MESSAGE; ?></strong></td>
+          </tr>
+          <tr>
+            <td class="main"><?php echo $order_check->fields['gift_message']; ?></td>
+          </tr>
+          <?php } ?>
+          <!-- end FEC v1.24 dropdown -->
         </table></td>
       </tr>
     </table></td>
